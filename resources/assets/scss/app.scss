@@ -1,0 +1,174 @@
+
+// Fonts
+@import url(https://fonts.googleapis.com/css?family=Raleway:300,400,600);
+
+// Variables
+@import "variables";
+
+// Bootstrap
+@import "node_modules/bootstrap-sass/assets/stylesheets/bootstrap";
+
+.words {
+  text-align: left;
+  margin: none;
+  padding: none;
+}
+
+.form-section-div {
+  display: block;
+  margin: 5em;
+  margin-top: -2px;
+  padding-top: none;
+}
+
+.nameField{
+  display: block;
+  width: 100%;
+  margin-top: 1em;
+  .inputWrapper{
+    width: 65%;
+    display: inline-block;
+  }
+  label {
+    display: inline-block;
+  }
+}
+.badge.red{
+  position: relative !important;
+  left: 4px !important;
+  top: -2px !important;
+}
+
+.dims {
+  display: block;
+  width: 100%;
+  padding-left: 1em;
+  .dimensions {
+    display: inline-block;
+    input{
+      width: 4em;
+      max-width: 50%;
+    }
+    label, input, span {
+      display: inline-block;
+    }
+
+  }
+}
+
+.project {
+  display: block;
+  margin-top: -30px;
+  width: 100%;
+  label, * {
+    display: inline-block;
+  }
+  select{
+    margin-left: -5px;
+    width: 25em;
+  }
+}
+
+.chckbx {
+  margin-left: 35px;
+}
+
+.dayPicker{
+  display: block;
+  margin-bottom: -10px;
+  label{
+    display: inline-block;
+  }
+  label+span{
+    display: inline-block;
+    padding: 0;
+    margin-bottom: -10px;
+  }
+
+}
+
+.parts{
+  display: block;
+  margin-bottom: -2em;
+  input{
+    width: 4em;
+  }
+  *{
+    display: inline-block;
+  }
+}
+
+.price{
+  display: block;
+  input{
+    width: 4em;
+  }
+  *{
+    display: inline-block;
+  }
+}
+
+.stlFile{
+  display: block;
+   *{
+    display: inline-block !important;
+  }
+}
+
+// *** //
+// Section for the show table 👀 👀 👀 👀
+// *** //
+
+.showTable{
+  border: none;
+  margin: auto;
+  *{
+    background: none !important;
+    border: none;
+    width: 200px;
+    padding: none;
+    label{
+      float: right;
+      text-align: right;
+    }
+  }
+}
+
+// **** //
+// Section for the index table.
+// **** //
+
+.indexTable{
+  border-collapse: separate;
+  width: 1152px;
+}
+.table-header.eos{
+  width: 1152px;
+}
+.id-td{
+  // border-right: none;
+}
+.fileLink{
+  border: none;
+  border-top: 1px solid #d6d6d6;
+  border-right: 1px solid #d6d6d6;
+}
+
+.indexTable thead tr{
+  border: none;
+  th{
+    border: none;
+    background-color: #d6d6d6;
+    border-top: 1px solid #f2f2f2;
+  }
+}
+.hackAttack{
+  background-color: #f2f2f2 !important;
+  height: 4em;
+  td{
+    border-top: 1px solid #d6d6d6;
+  }
+}
+.topRow td{
+  border-top: 4px solid #d6d6d6 !important;
+}
