@@ -186,11 +186,9 @@
           </td>
             {{-- <td>
               @if($eos->status === 0)
-                {!! Form::open(['method' => 'POST', 'url' => 'change/' . $eos->id ]) !!}
                 <button type="submit" class="btn btn-warning btn-gradient" >
                   In Process
                 </button>
-                {!! Form::close() !!}
               @elseif ($eos->status === 1)
                 {!! Form::open(['method' => 'POST', 'url' => 'change/' . $eos->id ]) !!}
                 <button type="submit" class="btn btn-warning btn-gradient" >
@@ -220,6 +218,8 @@
           <td colspan="13"><span title="{{$eos->description}}">{{ str_limit($eos->description, 15) }}</span></td>
         </tr>
       @endif
+      {!! Form::open() !!}
+      {!! Form::close() !!}
     @endforeach
  </table>
 </div>

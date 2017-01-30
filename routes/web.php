@@ -28,9 +28,9 @@ Route::get('/requests/{id}/edit', 'EOSRequestsController@edit')->name('request.e
 Route::post('/requests', 'EOSRequestsController@store')->name('request.store');
 Route::get('/download/{id}/{file_name}', 'EOSRequestsController@download');
 
-Route::get('/loggery', 'EOSRequestsController@loggery');
+Route::get('/loge', 'EOSRequestsController@loggery');
 Route::get('/solo', 'EOSRequestsController@solo');
 Route::get('/peasant', function(){
-  Auth::loginUsingId('c5ad9b2d-b59e-11e6-8fb9-0aad45e20ffe');
+  Auth::loginUsingId('48356e60-b576-11e6-8fb9-0aad45e20ffe');
   return redirect('/requests');
 });
