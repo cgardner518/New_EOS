@@ -1,3 +1,4 @@
+
 @extends('Labcoat::layouts/standard')
 @section('page-title')
   EOS Requests
@@ -87,7 +88,7 @@
           </td>
           <td class="nameDiv">
             <span title="{{ $eos->users->name }}">
-            {{ str_limit($eos->users->name, 7) }}
+            {{ str_limit($eos->users->name, 9) }}
             </span>
           </td>
           <td>{{ $eos->created_at}}</td>

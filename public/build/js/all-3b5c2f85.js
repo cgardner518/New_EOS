@@ -33243,23 +33243,23 @@ $(function() {
 			}
 		});
 	});
-	
+
 	// Set up any delete buttons on the page
 	deleteSetup();
-	
+
 	// Set up the impersonate and/or delegate links if either exists
 	// Bring up the modal to pick someone to impersonate or delegate to
 	$('#impersonate, #delegate').click(function() {
 
 		var modalId = $(this).prop('id')+'Modal';
 		var url = $(this).prop('href');
-		
+
 		if($('#'+modalId).length) {
 			// Show the existing one
 			$('#'+modalId).modal('show');
 			return false;
 		}
-		
+
 		var data = {'modalId':modalId};
 
 		// Fetch the modal from the server
@@ -33282,14 +33282,14 @@ $(function() {
 				$('#main-content').append(data);
 			}
 		});
-		
+
 		return false;
 	});
-	
+
 	$(".impersonate").click(function() {
 		var url = $(this).prop('href');
 		var data = {_token:$(this).parent().parent().data('token'), user_id:$(this).data('user_id')};
-		
+
 		$.ajax({
 			type: "POST",
 			url: url,
@@ -33301,18 +33301,18 @@ $(function() {
 				location.reload();
 			}
 		});
-		
+
 		return false;
 	});
-	
+
 	$(".removeImpersonation").click(function() {
 		var id = $(this).data('impersonation');
 		var data = {_method:'DELETE', _token:$(this).parent().parent().data('token')};
-		
+
 		var $li = $(this).parent();
-		
+
 		$li.slideUp();
-		
+
 		$.ajax({
 			type: "POST",
 			url: $(this).prop('href'),
@@ -33378,7 +33378,7 @@ function deleteSetup() {
 			.addClass('popConfirmSet');
 
 		}
-	}); 
+	});
 }
 
 
@@ -33398,7 +33398,7 @@ function modalAjaxSetup(options) {
 	}
 
 	$modalId = $('#'+modalId);
-	
+
 	var $form = $modalId.find('form');
 	// $form.keypress(function(event){
 	// 	if (event.which == 13){
@@ -33418,27 +33418,35 @@ function modalAjaxSetup(options) {
 
 		// Get the form elements and serialize them.
 		// This is done because checkboxes can have the same name like colors[]
-		var data= [] ;
+		var data= new FormData() ;
 		$form.find('select, input, textarea, .ajax-input').each(function() {
 			var $this = $(this);
-			var text = encodeURIComponent($this.prop('name'))+"="+encodeURIComponent($this.val());
+			var name = encodeURIComponent($this.prop('name'));
+			var value = encodeURIComponent($this.val());
 			if($this.is(':checkbox') || $this.is(':radio')) {
 				if($this.prop('checked')) {
-					data.push(text);
+					data.append(name, value);
 				}
+			} else if ($this.is(':file')) {
+				for (var i = 0; i < $this[0].files.length; i++) {
+					data.append(name+'_'+i, $this[0].files[i]);
+				}
+				// data.append(name, $this[0].files[0]);
 			} else {
-				data.push(text);
+				data.append(name, value);
 			}
 		});
 
 		$modalId.find('.errorField').removeClass('errorField');
 
-		var dataString = data.join('&');
+		var dataString = data;
 
 		$.ajax({
 			type: method,
 			url: action,
 			data: dataString,
+			contentType: false,
+			processData: false,
 			error: function(data) {
 				// Is there a custom function
 				if (typeof options['error'] == 'function') {
@@ -33447,12 +33455,12 @@ function modalAjaxSetup(options) {
 					// Do the standard error handling
 					$button.children('.ajax-indicator').popover('hide');
 					$button.removeClass('ajax-active');
-					
+
 					var errors = data.responseJSON;
 					var messages = [];
 					for(bundle in errors) {
 						$modalId.find("[name="+bundle+"]").addClass("errorField");
-						
+
 						for(key in errors[bundle]) {
 							messages.push(errors[bundle][key]);
 						}
@@ -33465,13 +33473,13 @@ function modalAjaxSetup(options) {
 				$button.children('.ajax-indicator').popover('hide');
 				$button.removeClass('ajax-active');
 				$modalId.find('.errorField').removeClass('errorField');
-				
+
 				// Is there a custom function
 				if (typeof options['success'] == 'function') {
 					options['success'](data);
 				} else {
 					location.reload();
-				}   
+				}
 			}
 		});
 	});
@@ -33513,4 +33521,4 @@ function displayErrorGritter(messages) {
 	displayGritter(messages);
 }
 
-//# sourceMappingURL=/build/js/all-8aac5781.js.map
+//# sourceMappingURL=/build/js/all-3b5c2f85.js.map

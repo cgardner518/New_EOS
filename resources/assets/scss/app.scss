@@ -33,10 +33,33 @@
     display: inline-block;
   }
 }
-.badge.red{
+.dimensions .badge.red{
   position: relative !important;
-  left: 4px !important;
-  top: -2px !important;
+  left: .5em !important;
+  top: .25em !important;
+}
+
+.dimensions {
+  width: 100%;
+  padding-left: 0;
+  .col-md-1 {
+    margin: 0;
+    padding-right: 0;
+  }
+  .col-md-2{
+    padding: 0;
+    input{
+      padding: 0 !important;
+    }
+  }
+}
+
+.form-group{
+  .input-group{
+    .col-md-11{
+      padding-left: 0;
+    }
+  }
 }
 
 .dims {
@@ -109,9 +132,9 @@
 }
 
 .stlFile{
-  display: block;
+  // display: block;
    *{
-    display: inline-block !important;
+    // display: inline-block !important;
   }
 }
 
@@ -134,16 +157,34 @@
   }
 }
 
-// **** //
+
+// **** //// **** //// **** //// **** //// **** //// **** //// **** //// **** //// **** //
 // Section for the index table.
-// **** //
+// **** //// **** //// **** //// **** //// **** //// **** //// **** //// **** //// **** //
+
+.width-limited-1600{
+  width: 1600px;
+  margin: auto;
+}
 
 .indexTable{
   border-collapse: separate;
-  width: 1152px;
+  // width: 1152px;
+  tbody:nth-child(odd){
+     .topRow{
+       td{
+         background-color: #ffffff !important;
+       }
+     }
+     .hackAttack{
+       td{
+         background-color: #ffffff !important;
+       }
+    }
+  }
 }
 .table-header.eos{
-  width: 1152px;
+  // width: 1152px;
 }
 .id-td{
   // border-right: none;
@@ -164,7 +205,7 @@
 }
 .hackAttack{
   background-color: #f2f2f2 !important;
-  height: 4em;
+  height: 3em;
   td{
     border-top: 1px solid #d6d6d6;
   }

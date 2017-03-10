@@ -12,20 +12,13 @@ class EOSRequest extends Model
   protected $fillable = [
     'name',
     'description',
-    'dimX',
-    'dimY',
-    'dimZ',
-    'clean',
-    'hinges',
-    'threads',
     'needed_by',
     'number_of_parts',
     'status',
     'cost',
     'admin_notes',
     'project_id',
-    'user_id',
-    'stl'
+    'user_id'
   ];
 
   public function getVolumeAttribute()
@@ -40,6 +33,11 @@ class EOSRequest extends Model
 
   public function users(){
     return $this->hasOne(User::class, 'id', 'user_id');
+  }
+
+  public function stl_files()
+  {
+    return $this->hasMany(StlFile::class, 'eos_id', 'id');
   }
 
 

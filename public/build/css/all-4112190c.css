@@ -13036,10 +13036,24 @@ body.secure-marking #main-page-wrapper {
   .nameField label {
     display: inline-block; }
 
-.badge.red {
+.dimensions .badge.red {
   position: relative !important;
-  left: 4px !important;
-  top: -2px !important; }
+  left: 0.5em !important;
+  top: 0.25em !important; }
+
+.dimensions {
+  width: 100%;
+  padding-left: 0; }
+  .dimensions .col-md-1 {
+    margin: 0;
+    padding-right: 0; }
+  .dimensions .col-md-2 {
+    padding: 0; }
+    .dimensions .col-md-2 input {
+      padding: 0 !important; }
+
+.form-group .input-group .col-md-11 {
+  padding-left: 0; }
 
 .dims {
   display: block;
@@ -13091,11 +13105,6 @@ body.secure-marking #main-page-wrapper {
   .price * {
     display: inline-block; }
 
-.stlFile {
-  display: block; }
-  .stlFile * {
-    display: inline-block !important; }
-
 .showTable {
   border: none;
   margin: auto; }
@@ -13108,12 +13117,16 @@ body.secure-marking #main-page-wrapper {
       float: right;
       text-align: right; }
 
-.indexTable {
-  border-collapse: separate;
-  width: 1152px; }
+.width-limited-1600 {
+  width: 1600px;
+  margin: auto; }
 
-.table-header.eos {
-  width: 1152px; }
+.indexTable {
+  border-collapse: separate; }
+  .indexTable tbody:nth-child(odd) .topRow td {
+    background-color: #fff !important; }
+    .indexTable tbody:nth-child(odd) .hackAttack td {
+      background-color: #fff !important; }
 
 .fileLink {
   border: none;
@@ -13129,11 +13142,11 @@ body.secure-marking #main-page-wrapper {
 
 .hackAttack {
   background-color: #f2f2f2 !important;
-  height: 4em; }
+  height: 3em; }
   .hackAttack td {
     border-top: 1px solid #d6d6d6; }
 
 .topRow td {
   border-top: 4px solid #d6d6d6 !important; }
 
-/*# sourceMappingURL=/build/css/all-b4085f79.css.map */
+/*# sourceMappingURL=/build/css/all-4112190c.css.map */

@@ -16,8 +16,13 @@ class EditEosRequest extends FormRequest
     {
       // if (Auth::User()->can('eosAdmin')) {
         // dd('Hi mom');
-        return true;
+        // return true;
       // }
+      // \App::abort(403, 'Sup');
+
+      if (Auth::User()->can('eosAdmin') || Auth::User()->can('eosGuest')) {
+        return true;
+      }
       \App::abort(403, 'Sup');
     }
 
@@ -30,22 +35,6 @@ class EditEosRequest extends FormRequest
       return [
         'name' => 'required',
         'description'=> 'required',
-        'dimX'=> [
-          'required',
-          'numeric'
-        ],
-        'dimY'=> [
-          'required',
-          'numeric'
-        ],
-        'dimZ'=> [
-          'required',
-          'numeric'
-        ],
-        'number_of_parts'=> [
-          'required',
-          'numeric'
-        ],
       ];
     }
 

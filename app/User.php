@@ -29,4 +29,9 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
+
+    public function eosRequests()
+    {
+      return $this->hasMany(EOSRequest::class, 'user_id', 'id');
+    }
 }

@@ -27,25 +27,25 @@ class CreateEosRequest extends FormRequest
     public function rules()
     {
         return [
-          'name' => 'required',
-          'description'=> 'required',
-          'dimX'=> [
-            'required',
-            'numeric'
-          ],
-          'dimY'=> [
-            'required',
-            'numeric'
-          ],
-          'dimZ'=> [
-            'required',
-            'numeric'
-          ],
-          'number_of_parts'=> [
-            'required',
-            'numeric'
-          ],
-          'stl'=> 'required'
+          // 'name' => 'required',
+          // 'description'=> 'required',
+          // 'dimX'=> [
+          //   'required',
+          //   'numeric'
+          // ],
+          // 'dimY'=> [
+          //   'required',
+          //   'numeric'
+          // ],
+          // 'dimZ'=> [
+          //   'required',
+          //   'numeric'
+          // ],
+          // 'number_of_parts'=> [
+          //   'required',
+          //   'numeric'
+          // ],
+          // 'stl'=> 'required'
         ];
     }
 
