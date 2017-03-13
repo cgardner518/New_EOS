@@ -65,7 +65,7 @@ class EOSRequestsController extends Controller
           'hinges' => $check[$part->hinges],
           'threads' => $check[$part->threads],
           'upload Date' => $part->created_at->format('n/j/Y g:iA'),
-          'status' => $stat[$part->status]
+          'status' => $part->id.'-'.$part->status
         ];
         return $things;
       });
@@ -96,20 +96,20 @@ class EOSRequestsController extends Controller
       $email = new Email;
       $email->user_id = $eos->users->id;
       $email->email_message = $request->message;
-      $email->eos = $id;
+      $email->eos = $eos->id;
       $email->save();
 
       $eos->status = 3;
       $eos->save();
 
       $eos->stl_files->each(function($part){
-        $stl = StlFile::find($part->id);
-        $stl->update(['status' => 3]);
+        $part->status = 3;
+        $part->save();
       });
 
-      // $eos->users->notify(new EOSRequestRejected($eos));
-      dd('FUCK DUDE!');
-      return $this->edit($eos->id);
+      $eos->users->notify(new EOSRequestRejected($eos));
+
+      return $this->index();
     }
 
     public function change(Request $id)
@@ -118,51 +118,30 @@ class EOSRequestsController extends Controller
       $stl->status = $id->status;
       $stl->save();
       $eos = EOSRequest::find($stl->eos_id);
+
       // dd($eos->stl_files->count());
-      $complete = 0;
-      $rejected = 0;
-      $pending = 0;
+      $total = $eos->stl_files->count();
+      $complete = $eos->stl_files->filter(function($val){return $val->status === 2;})->count();
+      $rejected = $eos->stl_files->filter(function($val){return $val->status === 3;})->count();
+      $pending = $eos->stl_files->filter(function($val){return $val->status === 0;})->count();
 
-      foreach ($eos->stl_files as $file) {
-
-        if ($file->status === 1) {
-          $eos->update(['status' =>1]);
-          return $eos;
-        }
-
-        if ($file->status == 2) {
-          $complete++;
-        }elseif ($file->status == 3) {
-          $rejected++;
-          foreach ($eos->stl_files as $val) {
-            if ($val->status == 1) {
-              $eos->update(['status' =>1]);
-              return $eos;
-            }
-          }
-        }elseif ($file->status == 0) {
-          $pending++;
-        }
-
-
-        if ($eos->stl_files->count() === $rejected || $eos->stl_files->count() === $pending || $eos->stl_files->count() === $complete) {
-          $eos->update(['status' =>$file->status]);
-          return $eos;
-        }
+      if ($complete + $rejected == $total) {
+        $here = 'cr';
+        $eos->status = 2;
+        $eos->save();
+      }elseif ($pending == $total) {
+        $here = 'pending';
+        $eos->status = 0;
+        $eos->save();
+      }else {
+        $here = 'process';
+        $eos->status = 1;
+        $eos->save();
       }
 
-      // dd($stl);
-      // $eos = EOSRequest::find($id);
-      // $eos->status ++;
-      // $eos->save();
       // Auth::user()->notify(new \FlashWarning("The status has been changed for ".$eos->name));
-      // $res = ['Pending', 'In Process', 'Complete', 'Rejected'];
 
-      // if($res[$eos->status] == 'Complete'){
-      //   $eos->users->notify(new EOSRequestCompleted($eos));
-      // }
-      //
-      return $eos;
+      return $here .' '. $eos->status;
     }
 
     public function create(Request $request)
@@ -233,19 +212,6 @@ class EOSRequestsController extends Controller
 
     public function download($id)
     {
-      // dd($id);
-      // $file = '../storage/app/stlFiles/'.$id.'/'. $file_name;
-      // if (file_exists($file)) {
-      //   header('Content-Description: File Transfer');
-      //   header('Content-Type: application/octet-stream');
-      //   header('Content-Disposition: attachment; filename="'.basename($file).'"');
-      //   header('Expires: 0');
-      //   header('Cache-Control: must-revalidate');
-      //   header('Pragma: public');
-      //   header('Content-Length: ' . filesize($file));
-      //   readfile($file);
-      //   exit;
-      // }
       $stl = StlFile::find($id);
       return response()->download(storage_path('app/stlFiles/'.$stl->eos_id.'/'.$stl->file_name));
     }
@@ -264,13 +230,9 @@ class EOSRequestsController extends Controller
 
     public function update(EditEosRequest $request, $id)
     {
-      // dd($request->all());
-      // Auth::user()->notify(new \FlashSuccess($request->name ." has been updated."));
       $eos = EOSRequest::find($id);
 
-
-      // I set the status in the switch stateent so I'll leave it out in the update method
-      $collection = $request->except('stl');
+      $collection = $request->except(['stl', 'status']);
       $eos->update($collection);
 
       Auth::user()->notify(new \FlashSuccess("Your request {$eos->name} has been submitted."));
@@ -300,9 +262,9 @@ class EOSRequestsController extends Controller
     public function loggery()
     {
       // Auth::loginUsingId('855bf786-c83c-11e5-a306-08002777c33d');  // Donny Developer
-  	  //  Auth::loginUsingId('c5ad9b2d-b59e-11e6-8fb9-0aad45e20ffe');  // Sampson
-      	Auth::loginUsingId('5f23d3c6-b1b3-11e6-8fb9-0aad45e20ffe'); // CTG
-        // Auth::loginUsingId('48356e60-b576-11e6-8fb9-0aad45e20ffe');  // Michael Jackson
+	    //  Auth::loginUsingId('c5ad9b2d-b59e-11e6-8fb9-0aad45e20ffe');  // Sampson
+    	Auth::loginUsingId('5f23d3c6-b1b3-11e6-8fb9-0aad45e20ffe'); // CTG
+      // Auth::loginUsingId('48356e60-b576-11e6-8fb9-0aad45e20ffe');  // Michael Jackson
 
       return redirect('/requests');
     }

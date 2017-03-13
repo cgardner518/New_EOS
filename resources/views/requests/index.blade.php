@@ -21,7 +21,7 @@ if ($user->can('eosAdmin')){
         url: "/part-list",
         exclude: ['id', 'updated_at', 'file_size'],
         sortKey: "eos_id",
-        itemsPerPage: 27
+        itemsPerPage: 50
       }
     ]
   }
@@ -38,7 +38,7 @@ if ($user->can('eosAdmin')){
         @if ($user->can('eosAdmin'))
           <div class="col-md-6" style="padding-left:0px;">
             {!! Form::label('', 'Show: ') !!}
-            {!! Form::select('table', ['Requests' => 'Requests', 'Parts' => 'Parts']) !!}
+            {!! Form::select('table', ['Requests' => 'Requests', 'Parts' => 'Parts'], '', ['class' => 'show-selector']) !!}
           </div>
         @endif
         <a class="pull-right btn btn-primary btn-gradient" href="/requests/create">New Request</a><br><br>
@@ -135,13 +135,13 @@ if ($user->can('eosAdmin')){
                       @endif
                     </td>
                     <td rowspan="2" align="center">
-                      @if($eos->status === 0)
+                      @if($eos->status == 0)
                           Pending
-                      @elseif ($eos->status === 1)
+                      @elseif ($eos->status == 1)
                           In Process
-                      @elseif( $eos->status === 2)
+                      @elseif( $eos->status == 2)
                           Complete
-                      @elseif( $eos->status === 3)
+                      @elseif( $eos->status == 3)
                         <span>
                           Rejected
                         </span>
@@ -166,20 +166,68 @@ if ($user->can('eosAdmin')){
             </table>
           </div>
         </div>
-
+{!! Form::open() !!}
+{!! Form::close() !!}
   </div>
  <script>
- $('select').change(function(){
+
+var inputz = '{!! Form::select('status', [0 => 'Pending', 1 => 'In Process', 3 => 'Rejected', 2 => 'Complete'], 1, ['class' => 'statusChange']) !!}'
+
+ $('.show-selector').change(function(){
 
    if ($(this).val() == 'Parts') {
      $('.eos, .indexTable').hide()
      $('.labcoat-grid').fadeIn(400)
+     $('tr td:nth-child(12)').each(function(i,v){
+      //  $(v).
+      var $curr = $(v).text().split('-');
+       $(v).html($(inputz).attr('id', $curr[0] ).val($curr[1]))
+      // console.log($(v).html());
+     })
    }else {
      $('.eos, .indexTable').fadeIn(400)
      $('.labcoat-grid').hide()
    }
 
  })
+
+
+ $('body').on('change', '.statusChange', function(e){
+   e.preventDefault();
+  //  console.log($(this).attr('id'));
+   $token = $('input[name="_token"]').attr('value');
+   $id = $(this).attr('id');
+   $status = $(this).val();
+
+   $data = {
+     '_token': $token,
+     'stl': $id,
+     'status': $status
+   }
+
+   $.ajax({
+     url: 'http://chris.zurka.com/change/'+$id,
+     method: 'POST',
+     data: $data
+   }).then(function(res){
+     console.log(res);
+   })
+
+ })
+
+
+
+ $('.pagination').mouseup(function(){
+
+     $('tr td:nth-child(12)').each(function(i,v){
+       var $curr = $(v).text().split('-');
+       $(v).html($(inputz).attr('id', $curr[0] ).val($curr[1]))
+       console.log($(v).html());
+     })
+
+ })
+
+
 
  // $('.changer').click(function(e){
  //   e.preventDefault();

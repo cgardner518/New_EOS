@@ -74,7 +74,7 @@
       {!! Form::textarea('admin_notes', $eos->admin_notes, ['class' => 'form-control']) !!}
     </div><br>
 
-    <button type="submit" data-modal-url="{{ URL::route('request.reject', ['id' => $eos->id]) }}" class="btn btn-danger btn-gradient rejecter pull-left" data-modal-id="reject-{{ $eos->id }}" >Reject</button>
+    <a href="javascript:undefined;" data-modal-url="{{ URL::route('request.reject', ['id' => $eos->id]) }}" class="btn btn-danger btn-gradient rejecter pull-left" data-modal-id="reject-{{ $eos->id }}" >Reject</a>
 
     <input class="pull-right btn btn-success btn-gradient" type="submit">
 
