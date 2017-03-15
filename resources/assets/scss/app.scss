@@ -163,10 +163,15 @@
 // **** //// **** //// **** //// **** //// **** //// **** //// **** //// **** //// **** //
 
 .width-limited-1600{
-  width: 1600px;
+  width: 80vw;
   margin: auto;
+  display: table;
 }
-
+// .labcoat-grid {
+//   table{
+//     width: 85vw;
+//   }
+// }
 .indexTable{
   border-collapse: separate;
   // width: 1152px;

@@ -68,14 +68,14 @@
         <button type="button" class="btn btn-primary btn-gradient" data-modal-url="{{URL::route('modalRoute', ['id' => $eos->id])}}" data-modal-id="add_stls_{{$eos->id}}">Add Part</button>
       </div>
     </div>
-
+@if (Auth::user()->can('eosAdmin'))
     <div class="form-row">
       {!! Form::label('admin_notes', 'Admin Notes') !!}
       {!! Form::textarea('admin_notes', $eos->admin_notes, ['class' => 'form-control']) !!}
     </div><br>
 
     <a href="javascript:undefined;" data-modal-url="{{ URL::route('request.reject', ['id' => $eos->id]) }}" class="btn btn-danger btn-gradient rejecter pull-left" data-modal-id="reject-{{ $eos->id }}" >Reject</a>
-
+@endif
     <input class="pull-right btn btn-success btn-gradient" type="submit">
 
     {!! Form::close() !!}

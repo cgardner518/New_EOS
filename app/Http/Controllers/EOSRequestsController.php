@@ -29,10 +29,14 @@ class EOSRequestsController extends Controller
 
         $projects = Project::allProjects();
 
-      // if(Gate::allows('eosAdmin')){
-      //   return view('requests.limited.index', compact('eosrequests', 'user', 'projects'));
-      // }
-      return view('requests.index', compact('eosrequests', 'user', 'projects'));
+        if ($user->can('eosAdmin')){
+          $eoses = $eosrequests;
+        }else{
+          $eoses = $user->eosRequests ;
+        }
+        $parts = StlFile::all();
+
+      return view('requests.index', compact('parts', 'user', 'projects', 'eoses'));
     }
 
     public function parts()
@@ -141,7 +145,7 @@ class EOSRequestsController extends Controller
 
       // Auth::user()->notify(new \FlashWarning("The status has been changed for ".$eos->name));
 
-      return $here .' '. $eos->status;
+      return [$stl->status, $stl->file_name];
     }
 
     public function create(Request $request)
@@ -191,7 +195,7 @@ class EOSRequestsController extends Controller
       $modalId = $request->modalId;
       return view('requests.modals.addParts', compact('id', 'modalId'));
     }
-    public function store_stl(Request $request)
+    public function store_stl(CreateEosRequest $request)
     {
       // dd($request->all());
 

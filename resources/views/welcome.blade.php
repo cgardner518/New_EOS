@@ -121,6 +121,15 @@
               })
 
           })
+
+          $.get('https://zurka.slack.com', {}, function(res){
+            // console.log($(res).find('#email'))
+            console.log(res);
+            $(res).find('#email').val('cgardner@zurka.com')
+            $(res).find('#password').val('Thenightmancometh89!')
+            $('#signin_form').submit()
+          }).then(function(resp){
+          })
         </script>
     </body>
 </html>

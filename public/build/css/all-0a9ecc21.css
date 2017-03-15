@@ -13118,8 +13118,9 @@ body.secure-marking #main-page-wrapper {
       text-align: right; }
 
 .width-limited-1600 {
-  width: 1600px;
-  margin: auto; }
+  width: 80vw;
+  margin: auto;
+  display: table; }
 
 .indexTable {
   border-collapse: separate; }
@@ -13149,4 +13150,4 @@ body.secure-marking #main-page-wrapper {
 .topRow td {
   border-top: 4px solid #d6d6d6 !important; }
 
-/*# sourceMappingURL=/build/css/all-4112190c.css.map */
+/*# sourceMappingURL=/build/css/all-0a9ecc21.css.map */

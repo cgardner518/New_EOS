@@ -29,18 +29,18 @@ class CreateEosRequest extends FormRequest
         return [
           // 'name' => 'required',
           // 'description'=> 'required',
-          // 'dimX'=> [
-          //   'required',
-          //   'numeric'
-          // ],
-          // 'dimY'=> [
-          //   'required',
-          //   'numeric'
-          // ],
-          // 'dimZ'=> [
-          //   'required',
-          //   'numeric'
-          // ],
+          'dimX'=> [
+            'required',
+            'numeric'
+          ],
+          'dimY'=> [
+            'required',
+            'numeric'
+          ],
+          'dimZ'=> [
+            'required',
+            'numeric'
+          ]
           // 'number_of_parts'=> [
           //   'required',
           //   'numeric'

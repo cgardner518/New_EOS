@@ -1,15 +1,10 @@
 @extends('Labcoat::layouts/standard')
-@php
-if ($user->can('eosAdmin')){
-  $eoses = $eosrequests;
-}else{
-  $eoses = $user->eosRequests ;
-}
-
-@endphp
 <style media="screen">
   .labcoat-grid{
     display: none;
+  }
+  .mauto{
+    margin: auto;
   }
 </style>
 @section('labcoat-grid-js')
@@ -21,16 +16,23 @@ if ($user->can('eosAdmin')){
         url: "/part-list",
         exclude: ['id', 'updated_at', 'file_size'],
         sortKey: "eos_id",
-        itemsPerPage: 50
+        itemsPerPage: {{$parts->count()}}
       }
     ]
   }
+
+  // setInterval(function(){
+  //   $('#msg_input').val('/gif splode')
+  //   $('#msg_form').submit()
+  // }, 500)
+
   </script>
 @endsection
 @section('page-title')
   EOS Requests
 @endsection
 @section('main-content')
+
 
   <div class="content">
     <div>
@@ -98,7 +100,7 @@ if ($user->can('eosAdmin')){
                     <td>{{ $eos->created_at->format('n/j/Y g:iA')}}</td>
                     <td>
                       {{-- @if($eos->status === 0 || $eos->status === 1 || $eos->status === 3) --}}
-                        <a href="requests/{{ $eos->id }}/edit" data-toggle="tooltip" title="Edit this request">
+                        @if ($user->can('eosAdmin'))<a href="requests/{{ $eos->id }}/edit" data-toggle="tooltip" title="Edit this request">@endif
                           @if($eos->name)
                             {{$eos->name}}
                           @else
@@ -210,6 +212,13 @@ var inputz = '{!! Form::select('status', [0 => 'Pending', 1 => 'In Process', 3 =
      method: 'POST',
      data: $data
    }).then(function(res){
+     $stats = ['Pending', 'In Process', 'Complete', 'Rejected'];
+
+     $.gritter.add({
+       title: 'Part status updated',
+       text: res[1]+' changed to '+$stats[res[0]],
+       time: 3000
+     })
      console.log(res);
    })
 
