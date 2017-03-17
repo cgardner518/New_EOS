@@ -4,10 +4,13 @@
 @endphp
 <table>
   <thead>
-    <th style="width:30em;">STL File</th>
+    <th>Edit</th>
+    <th>STL File</th>
+    <th>Quantity</th>
     <th>X</th>
     <th>Y</th>
     <th>Z</th>
+    <th>Volume</th>
     <th>Cleaning</th>
     <th>Moving Parts</th>
     <th>Threads</th>
@@ -18,10 +21,17 @@
     @if (count($eos->stl_files)>0)
       @foreach ($eos->stl_files->reverse() as $stl)
         <tr class="{{$stl->id}}">
-          <td>{{ $stl->file_name }}</td>
+          <td align="center">
+            @if ($stl->status == 0)
+              <a href="javascript:undefined;" class="fa fa-pencil" style="text-decoration:none;" data-modal-url="{{URL::route('stl.edit', ['id' => $stl->id])}}" data-modal-id="stl_edit_{{$stl->id}}" ></a>
+            @endif
+          </td>
+          <td><a href="/download/{{$stl->id}}">{{ $stl->file_name }}</a></td>
+          <td align="center">{{$stl->quantity}}</td>
           <td>{{ $stl->dimX }}</td>
           <td>{{ $stl->dimY }}</td>
           <td>{{ $stl->dimZ }}</td>
+          <td>{{ $stl->dimZ*$stl->dimX*$stl->dimY*$stl->quantity }}</td>
           <td align="center">{{ $tobe[$stl->clean] }}</td>
           <td align="center">{{ $tobe[$stl->hinges] }}</td>
           <td align="center">{{ $tobe[$stl->threads] }}</td>
@@ -36,7 +46,7 @@
     @else
       <tr class="no_parts">
         @if ($eos->users->can('eosAdmin'))
-          <td colspan="9" class="text-center">No parts have been uploaded yet.</td>
+          <td colspan="12" class="text-center">No parts have been uploaded yet.</td>
         @endif
       </tr>
     @endif

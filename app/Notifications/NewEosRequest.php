@@ -48,7 +48,7 @@ class NewEosRequest extends Notification
         return (new MailMessage)
                     ->line('A new request, '.$name.' has been submitted.')
                     ->action('View New Request', 'http://chris.zurka.com/requests/'.$this->eos->id)
-                    ->line('Thank you for using our application!');
+                    ->line('Thank you for using the LASR scheduler!');
     }
 
     /**

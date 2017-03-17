@@ -4,17 +4,18 @@
 @stop
 @section('modal-body')
 <div class="indent-padding width-limited-1200">
-  {!! Form::open(['url' => 'stls', 'files' => true]) !!}
+  {!! Form::open(['url' => 'update_stl', 'files' => true]) !!}
   <p class="hackFix">Submitted STL files must contain only a single part.</p>
   <div class="form-row badged stlFile col-md-12">
     <div class="col-md-1">
       {!! Form::label('stl', 'File: ') !!}
     </div>
     <div class="col-md-9">
-      {!! Form::file('stl') !!}
+      {{-- {!! Form::file('stl', '', $stl->file_name) !!} --}}
+      {{$stl->file_name}}
     </div>
     <div class="col-md-2">
-      <span class="badge red">Required</span>
+      {{-- <span class="badge red">Required</span> --}}
     </div>
   </div><br>
   <div class="form-row">
@@ -23,7 +24,7 @@
           {!! Form::label('quantity', 'Quantity:', ['class' => '']) !!}
         </div>
         <div class="col-md-2" style="padding-left:0;">
-          {!! Form::number('quantity', 1, ['class' => 'form-control']) !!}
+          {!! Form::number('quantity', $stl->quantity, ['class' => 'form-control']) !!}
         </div>
     </div>
   </div>
@@ -37,7 +38,7 @@
             {!! Form::label('dimX', 'X:', ['class' => '']) !!}
           </div>
           <div class="col-md-2">
-            {!! Form::text('dimX', '', ['class' => 'form-control']) !!}
+            {!! Form::text('dimX', $stl->dimX, ['class' => 'form-control']) !!}
           </div>
           <span class="badge red">Required</span>
         </div>
@@ -51,7 +52,7 @@
             {!! Form::label('dimY', 'Y:', ['class' => '']) !!}
           </div>
           <div class="col-md-2">
-            {!! Form::text('dimY', '', ['class' => 'form-control']) !!}
+            {!! Form::text('dimY', $stl->dimY, ['class' => 'form-control']) !!}
           </div>
           <span class="badge red">Required</span>
         </div>
@@ -65,7 +66,7 @@
             {!! Form::label('dimZ', 'Z:', ['class' => '']) !!}
           </div>
           <div class="col-md-2">
-            {!! Form::text('dimZ', '', ['class' => 'form-control']) !!}
+            {!! Form::text('dimZ', $stl->dimZ, ['class' => 'form-control']) !!}
           </div>
           <span class="badge red">Required</span>
         </div>
@@ -78,15 +79,16 @@
   <div class="form-group">
     <div class="input-group">
         <div class="col-md-1"></div>
-        <div class="col-md-11">{!! Form::checkbox('clean', 1, true) !!} Perfom post building cleaning.</div>
+        <div class="col-md-11">{!! Form::checkbox('clean', 1, $stl->clean) !!} Perfom post building cleaning.</div>
         <div class="col-md-1"></div>
-        <div class="col-md-11">{!! Form::checkbox('hinges', 1, false) !!} Has hinges or other moving parts.</div>
+        <div class="col-md-11">{!! Form::checkbox('hinges', 1, $stl->hinges) !!} Has hinges or other moving parts.</div>
         <div class="col-md-1"></div>
-        <div class="col-md-11">{!! Form::checkbox('threads', 1, false)!!} Has threads</div>
+        <div class="col-md-11">{!! Form::checkbox('threads', 1, $stl->threads)!!} Has threads</div>
     </div>
   </div>
 
-<input type="hidden" name="eos_id" value="{{$id}}">
+
+<input type="hidden" name="id" value="{{$stl->id}}">
   {!! Form::close() !!}
 </div>
 
@@ -112,7 +114,7 @@
         $('.no_parts').hide();
         $('.stl_table').empty();
         $('.stl_table').append(data)
-        $('.stl_table table tbody tr').first().hide().fadeIn(700);
+        // $('.stl_table table tbody tr').first().hide().fadeIn(700);
         $('#{{$modalId}}').remove();
         $('.modal-backdrop, .modal').remove();
         $('body').removeClass('modal-open');

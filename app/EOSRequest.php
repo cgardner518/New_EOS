@@ -18,7 +18,8 @@ class EOSRequest extends Model
     'cost',
     'admin_notes',
     'project_id',
-    'user_id'
+    'user_id',
+    'job_num'
   ];
 
   public function getVolumeAttribute()

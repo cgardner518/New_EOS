@@ -32,15 +32,32 @@ class EditEosRequest extends FormRequest
      * @return array
      */
     public function rules(){
-      return [
-        'name' => 'required',
-        'description'=> 'required',
-      ];
+      $rules['name'] = 'required';
+      $rules['description'] = 'required';
+      if ($this->project_id == 0) {
+        $rules['job_num'] = 'required';
+      }else{
+        $this->merge(['job_num' => '']);
+      }
+      // if ($this->has('needed_by'))
+      //  {
+      //
+      //  }
+
+      if ($this->needed_by == '') {
+        $eos = $this->except('needed_by');
+        $this->replace($eos);
+      }else{
+        $this->merge(['needed_by' => date('Y-m-d', strtotime($this->needed_by))]);
+      }
+      return $rules;
+
     }
 
     public function messages(){
       return [
         'name.required' => 'Name is a required field',
+        'job_num.required' => 'Job Number is a required field',
         'description.required' => 'Description is a required field',
         'dimX.required' => 'All three(3) dimensions are required, X is not filled',
         'dimY.required' => 'All three(3) dimensions are required, Y is not filled',

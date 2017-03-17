@@ -14,7 +14,7 @@
       {
         label: "STL files",
         url: "/part-list",
-        exclude: ['id', 'updated_at', 'file_size'],
+        exclude: ['id', 'updated_at', 'file_size', 'job_num'],
         sortKey: "eos_id",
         itemsPerPage: {{$parts->count()}}
       }
@@ -128,7 +128,7 @@
                     <td align="center">
                       @if($eos->project_id == 0)
                         <span>
-                          No Project
+                          Not a LASR Project
                         </span>
                       @else
                         <span>
@@ -180,7 +180,7 @@ var inputz = '{!! Form::select('status', [0 => 'Pending', 1 => 'In Process', 3 =
    if ($(this).val() == 'Parts') {
      $('.eos, .indexTable').hide()
      $('.labcoat-grid').fadeIn(400)
-     $('tr td:nth-child(12)').each(function(i,v){
+     $('tr td:nth-child(13)').each(function(i,v){
       //  $(v).
       var $curr = $(v).text().split('-');
        $(v).html($(inputz).attr('id', $curr[0] ).val($curr[1]))

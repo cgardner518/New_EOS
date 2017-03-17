@@ -12,7 +12,9 @@ use App\Email;
 use App\Project;
 use App\StlFile;
 use App\EOSRequest;
+use App\Mail\AdminEmail;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use App\Notifications\NewEosRequest;
 use App\Http\Requests\EditEosRequest;
 use App\Http\Requests\CreateEosRequest;
@@ -23,17 +25,16 @@ class EOSRequestsController extends Controller
 {
     public function index()
     {
-        $eosrequests = EOSRequest::with('users')->get();
-
-        $user = Auth::user();
-
-        $projects = Project::allProjects();
+      $user = Auth::user();
+      $projects = Project::allProjects();
+      $eosrequests = EOSRequest::where('name', '!=', '')->with('users')->get();
 
         if ($user->can('eosAdmin')){
           $eoses = $eosrequests;
         }else{
           $eoses = $user->eosRequests ;
         }
+
         $parts = StlFile::all();
 
       return view('requests.index', compact('parts', 'user', 'projects', 'eoses'));
@@ -42,12 +43,18 @@ class EOSRequestsController extends Controller
     public function parts()
     {
       $parts = StlFile::all();
+      $parts = $parts->filter(function($part){
+        $eos = EOSRequest::find($part->eos_id);
+        if ($eos->name) {
+          return $part;
+        }
+      });
 
       $parts = $parts->map(function($part){
 
         $uploader = User::find($part->uploaded_by);
         $eos = EOSRequest::find($part->eos_id);
-        $size = ($part->dimX*$part->dimY)*$part->dimZ;
+        $size = ($part->dimX*$part->dimY)*$part->dimZ*$part->quantity;
         $check = ['Yes', 'No'];
         $stat = ['Pending' , 'In Process', 'Complete', 'Rejected'];
 
@@ -56,6 +63,7 @@ class EOSRequestsController extends Controller
             'href' => 'download/'.$part->id,
             'textContent' => $part->file_name
           ],
+          'quantity' => $part->quantity,
           'request_a' => [
             'href'=> "requests/{$eos->id}/edit",
             'textContent' => !!$eos->name ? "({$eos->id}) {$eos->name}" :"({$eos->id}) Unnamed"
@@ -195,6 +203,32 @@ class EOSRequestsController extends Controller
       $modalId = $request->modalId;
       return view('requests.modals.addParts', compact('id', 'modalId'));
     }
+
+    public function edit_stl(Request $request)
+    {
+      // dd($request->all());
+      $id = $request->id;
+      $stl = StlFile::find($id);
+      $modalId = $request->modalId;
+      return view('requests.modals.editPart', compact('stl', 'id', 'modalId'));
+    }
+    public function update_stl(CreateEosRequest $request)
+    {
+      // dd($request->all());
+
+      $stl = StlFile::find($request->id);
+      $eos = EOSRequest::find($stl->eos_id);
+      $stl->fill($request->only(['dimX', 'dimY', 'dimZ']));
+      $stl->clean = !!($request->clean);
+      $stl->hinges = !!($request->hinges);
+      $stl->threads = !!($request->threads);
+      $stl->quantity = $request->quantity;
+      // dd($stl);
+      $stl->save();
+
+      return view('requests.partials.stl_table', compact('eos'));
+    }
+
     public function store_stl(CreateEosRequest $request)
     {
       // dd($request->all());
@@ -207,6 +241,7 @@ class EOSRequestsController extends Controller
       $stl->hinges = !!($request->hinges);
       $stl->threads = !!($request->threads);
       $stl->file_name = $fileName;
+      $stl->quantity = $request->quantity;
       $stl->uploaded_by =  Auth::user()->id;
       $stl->save();
       head($request->file())->storeAs('stlFiles/'.$request->eos_id.'/'.$request->id, $fileName);
@@ -222,11 +257,11 @@ class EOSRequestsController extends Controller
 
     public function edit($id)
     {
-
+      $stats = ['Pending','In Process', 'Complete', 'Rejected'];
       $eos = EOSRequest::find($id);
-
+      $eos->status = $stats[$eos->status];
       $projects = Project::projectsForUser($eos->user_id);
-      $projects[0] = 'Not A Project';
+      $projects[0] = 'Not a LASR project';
       ksort($projects);
 
       return view('requests.edit', compact('eos', 'projects'));
@@ -246,12 +281,12 @@ class EOSRequestsController extends Controller
 
     public function destroy($id)
     {
-      Auth::user()->notify(new \FlashError("Your request has been submitted."));
+      // Auth::user()->notify(new \FlashError("The request {$eos->name} has been deleted."));
       $eos = EOSRequest::find($id);
       $eos->stl_files()->delete();
       $eos->delete();
 
-      return redirect('/requests');
+      return ; //redirect('/requests');
     }
 
     public function file_delete($id)
@@ -276,6 +311,25 @@ class EOSRequestsController extends Controller
     public function solo(){
        Auth::loginUsingId('9a2fe30b-bbc7-11e6-8fb9-0aad45e20ffe');  // Ben Solo
       return $this->index();
+    }
+
+    public function emailer(Request $request){
+      dd($request->all());
+      $user = Auth::user();
+      // $eos = $request->eos_name;
+      $email_stuff = $request->all();
+      $email = new AdminEmail($email_stuff);
+      Mail::to($user->email)->send($email);
+
+      return 'Success';
+    }
+
+    public function email_modal(Request $request)
+    {
+      // dd($request->all());
+      $id = $request->id;
+      $modalId = $request->modalId;
+      return view('requests.modals.emailModal', compact('id', 'modalId'));
     }
 
 }
