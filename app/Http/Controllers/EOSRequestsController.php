@@ -25,6 +25,7 @@ class EOSRequestsController extends Controller
 {
     public function index()
     {
+      $menuName = 'indexTabs';
       $user = Auth::user();
       $projects = Project::allProjects();
       $eosrequests = EOSRequest::where('name', '!=', '')->with('users')->get();
@@ -35,9 +36,39 @@ class EOSRequestsController extends Controller
           $eoses = $user->eosRequests ;
         }
 
+        $eoses = $eoses->filter(function($eos){
+          if ($eos->status == 1 || $eos->status == 0) {
+            return $eos;
+          }
+        });
+
         $parts = StlFile::all();
 
-      return view('requests.index', compact('parts', 'user', 'projects', 'eoses'));
+      return view('requests.index', compact('parts', 'user', 'projects', 'eoses', 'menuName'));
+    }
+
+    public function historical()
+    {
+      $menuName = 'indexTabs';
+      $user = Auth::user();
+      $projects = Project::allProjects();
+      $eosrequests = EOSRequest::where('name', '!=', '')->with('users')->get();
+
+        if ($user->can('eosAdmin')){
+          $eoses = $eosrequests;
+        }else{
+          $eoses = $user->eosRequests ;
+        }
+
+        $eoses = $eoses->filter(function($eos){
+          if ($eos->status == 2 || $eos->status == 3) {
+            return $eos;
+          }
+        });
+
+        $parts = StlFile::all();
+
+      return view('requests.index-history', compact('parts', 'user', 'projects', 'eoses', 'menuName'));
     }
 
     public function parts()
@@ -45,8 +76,10 @@ class EOSRequestsController extends Controller
       $parts = StlFile::all();
       $parts = $parts->filter(function($part){
         $eos = EOSRequest::find($part->eos_id);
-        if ($eos->name) {
-          return $part;
+        if ($eos->status == 1 || $eos->status == 0) {
+          if ($eos->name) {
+            return $part;
+          }
         }
       });
 
@@ -81,14 +114,34 @@ class EOSRequestsController extends Controller
         ];
         return $things;
       });
-      return $parts;
+      return $parts->values();
     }
 
     public function show($id)
     {
+      $stats = ['Pending','In Process', 'Complete', 'Rejected'];
       $eos = EOSRequest::find($id);
+      $eos->status = $stats[$eos->status];
+      $projects = Project::projectsForUser($eos->user_id);
+      $projects[0] = 'Not a LASR project';
+      ksort($projects);
 
-      return view('requests.show', compact('eos'));
+      return view('requests.clone', compact('eos', 'projects'));
+    }
+
+    public function cloner(Request $request)
+    {
+      // dd($request->all());
+      $oldie = EOSRequest::find($request->id);
+
+      $eos = new EOSRequest;
+      $eos->user_id = Auth::user()->id;
+      $eos->name = $oldie->name;
+      $eos->description = $oldie->description;
+      // $eos->project = $oldie->project;
+      $eos->save();
+
+      return redirect()->action('EOSRequestsController@edit', ['id' => $eos->id]);
     }
 
     public function reject(Request $request){
@@ -314,10 +367,11 @@ class EOSRequestsController extends Controller
     }
 
     public function emailer(Request $request){
-      dd($request->all());
-      $user = Auth::user();
-      // $eos = $request->eos_name;
-      $email_stuff = $request->all();
+      // dd($request->all());
+      $eos = EOSRequest::find($request->id);
+      $user = $eos->users;
+
+      $email_stuff = $request;
       $email = new AdminEmail($email_stuff);
       Mail::to($user->email)->send($email);
 
@@ -329,7 +383,8 @@ class EOSRequestsController extends Controller
       // dd($request->all());
       $id = $request->id;
       $modalId = $request->modalId;
-      return view('requests.modals.emailModal', compact('id', 'modalId'));
+      $eos = EOSRequest::find($id);
+      return view('requests.modals.emailModal', compact('id', 'modalId', 'eos'));
     }
 
 }

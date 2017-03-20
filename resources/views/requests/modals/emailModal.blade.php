@@ -12,6 +12,10 @@
   {!! Form::text('carb_cop','', ['class' => 'form-control']) !!}
 </div>
 <div class="rows form-group">
+  {!! Form::label('subject', 'Subject') !!}
+  {!! Form::text('subject','A message from LASR pertaining to your EOS request "'.$eos->name.'"' , ['class' => 'form-control']) !!}
+</div>
+<div class="rows form-group">
   {!! Form::label('message', 'Body') !!}
   {!! Form::textarea('message',null, ['placeholder' => 'Type your message to the user here..','class' => 'form-control']) !!}
 </div>
@@ -26,8 +30,8 @@
 
 @section('modal-js')
   <script>
-    // modalAjaxSetup('{{ $modalId }}');
-    modalAjaxSetup({ modalId: '{{ $modalId }}' , success: console.log});
+    modalAjaxSetup('{{ $modalId }}');
+    // modalAjaxSetup({ modalId: '{{ $modalId }}' , success: console.log});
   //   modalAjaxSetup({ modalId: '{{ $modalId }}' , success: function(){
   //     location.replace('http://chris.zurka.com/requests')
   //   }

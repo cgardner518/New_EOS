@@ -39,10 +39,6 @@ class EditEosRequest extends FormRequest
       }else{
         $this->merge(['job_num' => '']);
       }
-      // if ($this->has('needed_by'))
-      //  {
-      //
-      //  }
 
       if ($this->needed_by == '') {
         $eos = $this->except('needed_by');

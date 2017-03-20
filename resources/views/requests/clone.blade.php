@@ -6,7 +6,7 @@
 </style>
 @section('page-title')
   {{-- <a href="/requests" style="color:white">EOS Requests</a> / Edit  --}}
-  Edit Request
+  Request:  {{$eos->name}}
 @endsection
 @section('main-content')
   {{
@@ -27,17 +27,17 @@
     <div class="words">
       <p>All parts must be submitted as binary STL in millimeters (0.1mm tolerance & 1 degree angular resolution). Parts in any other units will be rejected outright.</p>
       <br>
-      <p><b>Current Status: </b>&nbsp;{{$eos->status}}</p>
-      @if (Auth::user()->can('eosAdmin'))
+      <p><b>Status: </b>&nbsp;{{$eos->status}}</p>
+      {{-- @if (Auth::user()->can('eosAdmin'))
         <p><b>Requester: </b>&nbsp;<a href="javascript:undefined;" style="text-decoration: underline;color:black;" data-modal-url="{{URL::route('emailModal', ['id' => $eos->id])}}" data-modal-id="admin_email_{{$eos->id}}">{{$eos->users->name}}</a></p>
-      @endif
+      @endif --}}
     </div>
-    {!! Form::open(['url' => 'requests/'.$eos->id, 'method' => 'PATCH', 'id' => 'form']) !!}
+    {!! Form::open(['url' => 'requests/'.$eos->id.'/clone', 'id' => 'form']) !!}
 
   <div class="form-group form-row badged nameField">
     {!! Form::label('name', 'Name:', ['class' => 'control-label']) !!}
     <div class="inputWrapper">
-      {!! Form::text('name', $eos->name, ['class' => 'form-control']) !!}
+      {!! Form::text('name', $eos->name, ['class' => 'form-control', 'disabled' => 'true']) !!}
     </div>
       <span class="badge red">Required</span>
   </div>
@@ -46,79 +46,65 @@
   <div class="project">
     {!! Form::label('project_id', 'Project:', ['class' => 'control-label']) !!}
     <div >
-      {!! Form::select('project_id', $projects, $eos->project_id, ['placeholder' => 'Choose project...']) !!}
+      {!! Form::select('project_id', $projects, $eos->project_id, ['placeholder' => 'Choose project...', 'disabled' => 'true']) !!}
     </div>
   </div><br>
 
-  <div class="form-group form-row badged" style="{{(!!old('project_id', $eos->project_id)) ? 'display:none;' : '' }}">
+  {{-- <div class="form-group form-row badged" style="{{(!!old('project_id', $eos->project_id)) ? 'display:none;' : '' }}">
     <div class="pull-left" >
       {!! Form::label('job_num', 'Job #:', ['class' => 'control-label']) !!}
     </div>
     <div class="col-md-4" style="padding-left: .8em;">
-      {!! Form::text('job_num',  $eos->job_num, ['class' => 'form-control']) !!}
+      {!! Form::text('job_num',  $eos->job_num, ['class' => 'form-control', 'disabled' => 'true']) !!}
     </div>
     <span class="badge red" style="top: none; right: none;">Required</span>
-  </div>
+  </div> --}}
 
   <br>
 
     <div class="form-group form-row badged">
       {!! Form::label('description', 'Description') !!}
       <span class="badge red" style="top:4em;">Required</span>
-      {!! Form::textarea('description', $eos->description, ['class' => 'form-control']) !!}
+      {!! Form::textarea('description', $eos->description, ['class' => 'form-control', 'disabled' => 'true']) !!}
     </div>
 
-    <div class="form-row dayPicker">
+    {{-- <div class="form-row dayPicker">
       {!! Form::label('needed_by', 'Date Needed By:') !!}
       {!! Form::dateField($eos->needed_by) !!}
       <p>Note: It is preferable that you do not give a deadline. Because parts are built as space is available, a deadline that is very soon will not be achievable in many cases. Please allow time to get into the queue.</p>
       <br>
-    </div>
+    </div> --}}
+<input type="hidden" name="id" value="{{$eos->id}}">
 
-    <div class="form-row form-group">
-      {!! Form::label('parts', 'Parts') !!}
-      <p>Submitted STL files must only contain a single part.</p>
-      <div class="stl_table">
-        @include('requests.partials.stl_table', $eos)
-      </div>
-      <div class="col-md-12 text-center">
-        <button type="button" class="btn btn-primary btn-gradient" data-modal-url="{{URL::route('modalRoute', ['id' => $eos->id])}}" data-modal-id="add_stls_{{$eos->id}}">Add Part</button>
-      </div>
-    </div>
 @if (Auth::user()->can('eosAdmin'))
     <div class="form-row">
       {!! Form::label('admin_notes', 'Admin Notes') !!}
-      {!! Form::textarea('admin_notes', $eos->admin_notes, ['class' => 'form-control']) !!}
+      {!! Form::textarea('admin_notes', $eos->admin_notes, ['class' => 'form-control', 'disabled' => 'true']) !!}
     </div><br>
-    @if ($eos->status == 'Pending')
-      <a href="javascript:undefined;" data-modal-url="{{ URL::route('request.reject', ['id' => $eos->id]) }}" class="btn btn-danger btn-gradient rejecter pull-left" data-modal-id="reject-{{ $eos->id }}" >Reject all parts</a>
-    @endif
+
 @endif
-    <input class="pull-right btn btn-success btn-gradient" type="submit">
+    <input class="pull-right btn btn-success btn-gradient" type="submit" value="Clone">
 
     {!! Form::close() !!}
   </div>
 </div>
 
       <script>
-      if ($('#project_id').val() == '') {
-        $('#job_num').parent().parent().hide()
-      }
 
-      $('#project_id').change(function(){
-        if ($(this).val() == 0) {
-          $('#job_num').parent().parent().fadeToggle(500)
-        }else{
-          $('#job_num').parent().parent().fadeOut(500)
-        }
-      })
-      // ===================================================
-    			// Date Picker
-    			$("#date-input").datepicker({ dateFormat: 'mm/d/yy' });
-    			$('form i.fa-calendar').on('click', function(){
-    				var target = this;
-    				var calID = '#' + $(target).data('calid');
-    				$(calID).focus();
-    			});
+      // $('#project_id').change(function(){
+      //   if ($(this).val() == 0) {
+      //     $('#job_num').parent().parent().fadeToggle(500)
+      //   }else{
+      //     $('#job_num').parent().parent().fadeOut(500)
+      //   }
+      // })
+      // // ===================================================
+    	// 		// Date Picker
+    	// 		$("#date-input").datepicker({ dateFormat: 'mm/d/yy' });
+    	// 		$('form i.fa-calendar').on('click', function(){
+    	// 			var target = this;
+    	// 			var calID = '#' + $(target).data('calid');
+    	// 			$(calID).focus();
+    	// 		});
       </script>
 @stop
