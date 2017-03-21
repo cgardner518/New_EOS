@@ -55,11 +55,41 @@
 <script type="text/javascript">
 
 $('body').on('change', '.statusChange', function(e){
-  e.preventDefault();
+  // e.preventDefault();
 
   $token = $('input[name="_token"]').attr('value');
   $id = $(this).parent().parent().attr('class');
   $status = $(this).val();
+
+  if ($status == 3) {
+
+    $url = 'http://chris.zurka.com/part-reject';
+    $data = {
+      'modalId': 'part-reject-'+$id,
+      'id': $id
+    };
+    
+    $.ajax({
+			type: "GET",
+			url: $url,
+			data: $data,
+			error: function(data) {
+				var errors = data.responseJSON;
+				var messages = [];
+				for(bundle in errors) {
+					for(key in errors[bundle]) {
+						messages.push(errors[bundle][key]);
+					}
+				}
+				displayError($('#errorForPage'), messages);
+			},
+			success: function(data) {
+				// add the modal to the DOM and show it
+				$('#main-content').append(data);
+			}
+		});
+    return ;
+  }
 
   $data = {
     '_token': $token,

@@ -17,8 +17,12 @@ Route::get('/', function () {
 
 Route::get('/requests', 'EOSRequestsController@index');
 Route::get('/history', 'EOSRequestsController@historical');
+
 Route::get('/reject', 'EOSRequestsController@reject')->name('request.reject');
+Route::get('/part-reject', 'EOSRequestsController@part_reject');
 Route::post('/reject/{id}', 'EOSRequestsController@rejected');
+Route::post('/part-reject/{id}', 'EOSRequestsController@part_rejected');
+
 Route::post('/change/{id}', 'EOSRequestsController@change');
 Route::get('/modalRoute', 'EOSRequestsController@add_stl')->name('modalRoute');
 Route::get('/requests/create', 'EOSRequestsController@create')->name('request.create');

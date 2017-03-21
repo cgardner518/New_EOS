@@ -9,11 +9,13 @@ use File;
 use Storage;
 use App\User;
 use App\Email;
-use App\Project;
 use App\StlFile;
+use App\Project;
 use App\EOSRequest;
 use App\Mail\AdminEmail;
 use Illuminate\Http\Request;
+use App\Notifications\PartRejected;
+use App\Notifications\PartComplete;
 use Illuminate\Support\Facades\Mail;
 use App\Notifications\NewEosRequest;
 use App\Http\Requests\EditEosRequest;
@@ -144,13 +146,38 @@ class EOSRequestsController extends Controller
       return redirect()->action('EOSRequestsController@edit', ['id' => $eos->id]);
     }
 
-    public function reject(Request $request){
+    public function reject(Request $request)
+    {
       // dd($request->all());
 
       $id = $request->id;
       $modalId = $request->modalId;
 
       return view('requests.modals.reject', compact('modalId', 'id'));
+    }
+    public function part_reject(Request $request)
+    {
+      // dd($request->all());
+      $id = $request->id;
+      $modalId = $request->modalId;
+
+      return view('requests.modals.part-reject', compact('modalId', 'id'));
+    }
+
+    public function part_rejected(Request $request)
+    {
+      // dd($request->all());
+      $part = StlFile::find($request->id);
+      $eos = EOSRequest::find($part->eos_id);
+
+      $msg = $request->message;
+
+      $part->status = 3;
+      $part->save();
+
+      $eos->users->notify(new PartRejected($part, $msg));
+
+      return 'Thmubs Up!';
     }
 
     public function rejected(Request $request)
@@ -177,13 +204,15 @@ class EOSRequestsController extends Controller
       return $this->index();
     }
 
-    public function change(Request $id)
+    public function change(Request $request)
     {
-      $stl = StlFile::find($id->stl);
-      $stl->status = $id->status;
+      $stl = StlFile::find($request->stl);
+      $stl->status = $request->status;
       $stl->save();
       $eos = EOSRequest::find($stl->eos_id);
-
+      if ($stl->status == 2) {
+        $eos->users->notify(new PartComplete($stl));
+      }
       // dd($eos->stl_files->count());
       $total = $eos->stl_files->count();
       $complete = $eos->stl_files->filter(function($val){return $val->status === 2;})->count();

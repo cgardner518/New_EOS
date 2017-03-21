@@ -21,11 +21,6 @@
     ]
   }
 
-  // setInterval(function(){
-  //   $('#msg_input').val('/gif splode')
-  //   $('#msg_form').submit()
-  // }, 500)
-
   </script>
 @endsection
 @section('page-title')
@@ -200,6 +195,37 @@ var inputz = '{!! Form::select('status', [0 => 'Pending', 1 => 'In Process', 3 =
    $id = $(this).attr('id');
    $status = $(this).val();
 
+   if ($status == 3) {
+
+     $url = 'http://chris.zurka.com/part-reject';
+     $data = {
+       'modalId': 'part-reject-'+$id,
+       'id': $id
+     };
+
+     $.ajax({
+ 			type: "GET",
+ 			url: $url,
+ 			data: $data,
+ 			error: function(data) {
+ 				var errors = data.responseJSON;
+ 				var messages = [];
+ 				for(bundle in errors) {
+ 					for(key in errors[bundle]) {
+ 						messages.push(errors[bundle][key]);
+ 					}
+ 				}
+ 				displayError($('#errorForPage'), messages);
+ 			},
+ 			success: function(data) {
+ 				// add the modal to the DOM and show it
+ 				$('#main-content').append(data);
+ 			}
+ 		});
+     return ;
+   }
+   
+
    $data = {
      '_token': $token,
      'stl': $id,
@@ -221,19 +247,19 @@ var inputz = '{!! Form::select('status', [0 => 'Pending', 1 => 'In Process', 3 =
      console.log(res);
    })
 
- })
+ });
 
 
 
- $('.pagination').mouseup(function(){
-
-     $('tr td:nth-child(12)').each(function(i,v){
-       var $curr = $(v).text().split('-');
-       $(v).html($(inputz).attr('id', $curr[0] ).val($curr[1]))
-       console.log($(v).html());
-     })
-
- })
+ // $('.pagination').mouseup(function(){
+ //
+ //     $('tr td:nth-child(12)').each(function(i,v){
+ //       var $curr = $(v).text().split('-');
+ //       $(v).html($(inputz).attr('id', $curr[0] ).val($curr[1]))
+ //       console.log($(v).html());
+ //     })
+ //
+ // })
 
 
 
