@@ -33207,6 +33207,7 @@ $(function() {
 	// The button/anchor needs to have data-modal-url in the tag
 	// Including data-modal-id is a best practice as it eliminates multiple modals
 	//
+	
 	$('body').on('click', 'button[data-modal-url], a[data-modal-url]', function() {
 		var url = $(this).data('modal-url');
 		var modalId = $(this).data('modal-id');
@@ -33521,4 +33522,4 @@ function displayErrorGritter(messages) {
 	displayGritter(messages);
 }
 
-//# sourceMappingURL=/build/js/all-3b5c2f85.js.map
+//# sourceMappingURL=/build/js/all-f255ac95.js.map

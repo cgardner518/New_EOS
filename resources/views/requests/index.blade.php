@@ -108,7 +108,7 @@
                       @endif --}}
                     </td>
                     <td align="center">
-                      {{ $eos->stl_files->count()}}
+                      {{ $eos->stl_files->sum('quantity')}}
                     </td>
                     <td align="center">
                       <span data-toggle="tooltip" title="Cost for print">
@@ -224,7 +224,7 @@ var inputz = '{!! Form::select('status', [0 => 'Pending', 1 => 'In Process', 3 =
  		});
      return ;
    }
-   
+
 
    $data = {
      '_token': $token,
