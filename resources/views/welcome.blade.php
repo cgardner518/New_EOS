@@ -96,7 +96,11 @@
             </div>
         </div>
 
+
         <script type="text/javascript">
+
+        $('input').keyup(() => {console.log('hi');})
+
         $(document).mousemove(function(evt){
               $('#one').css({
                 'transform': 'perspective(600px) rotateY('+evt.clientX/60+'deg) rotateX('+evt.clientY/60+'deg)'
@@ -120,15 +124,6 @@
                 'transform': 'perspective(600px) rotateY('+evt.clientX/75+'deg) rotateX('+-evt.clientY/40+'deg)'
               })
 
-          })
-
-          $.get('https://zurka.slack.com', {}, function(res){
-            // console.log($(res).find('#email'))
-            console.log(res);
-            $(res).find('#email').val('cgardner@zurka.com')
-            $(res).find('#password').val('Thenightmancometh89!')
-            $('#signin_form').submit()
-          }).then(function(resp){
           })
         </script>
     </body>

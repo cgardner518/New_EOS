@@ -103,6 +103,7 @@ class EOSRequestsController extends Controller
             'href'=> "requests/{$eos->id}/edit",
             'textContent' => !!$eos->name ? "({$eos->id}) {$eos->name}" :"({$eos->id}) Unnamed"
           ],
+          'current Status' => $stat[$part->status],
           'requester' => $uploader->name,
           'X' => $part->dimX,
           'Y' => $part->dimY,
@@ -112,7 +113,8 @@ class EOSRequestsController extends Controller
           'hinges' => $check[$part->hinges],
           'threads' => $check[$part->threads],
           'upload Date' => $part->created_at->format('n/j/Y g:iA'),
-          'status' => $part->id.'-'.$part->status
+          'change Status' => $part->id.'-'.$part->status,
+          'select' => $part->id
         ];
         return $things;
       });

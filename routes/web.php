@@ -14,6 +14,9 @@
 Route::get('/', function () {
     return view('welcome');
 });
+Route::get('/vuez', function () {
+    return view('vuetest');
+});
 
 Route::get('/requests', 'EOSRequestsController@index');
 Route::get('/history', 'EOSRequestsController@historical');

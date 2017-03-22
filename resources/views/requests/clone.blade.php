@@ -5,10 +5,10 @@
   }
 </style>
 @section('page-title')
-  Request:  {{$eos->name}}
+  <a href="/history" style="color:white">Past Requests</a> / Request:  {{$eos->name}}
 @endsection
 @section('main-content')
-  
+
 <div class="indent-padding width-limited-1200">
   <div class="form-section-div">
     <div class="words">
