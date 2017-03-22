@@ -165,6 +165,21 @@
 
 var inputz = '{!! Form::select('status', [0 => 'Pending', 1 => 'In Process', 3 => 'Rejected', 2 => 'Complete'], 1, ['class' => 'statusChange']) !!}'
 var chex = '{!! Form::checkbox('', '', false) !!}'
+
+  $(document.body).on('keyup', '.form-control.content-search.filter', function(){
+    $('tr td:nth-child(14)').each(function(i,v){
+    //  var $curr = $(v).text().split('-');
+      $(v).html($(inputz).attr('id', $curr[0] ).val($curr[1]))
+    })
+
+    $('tr td:nth-child(15)').each(function(i,v){
+      var $chektd =  $(v).text();
+      $(v).html($(chex).attr('name', $chektd))
+      $(v).parent().attr('align', 'center')
+    })
+
+  })
+
  $('.show-selector').change(function(){
 
    if ($(this).val() == 'Parts') {

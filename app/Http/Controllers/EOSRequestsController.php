@@ -103,7 +103,7 @@ class EOSRequestsController extends Controller
             'href'=> "requests/{$eos->id}/edit",
             'textContent' => !!$eos->name ? "({$eos->id}) {$eos->name}" :"({$eos->id}) Unnamed"
           ],
-          'current Status' => $stat[$part->status],
+          'status' => $stat[$part->status],
           'requester' => $uploader->name,
           'X' => $part->dimX,
           'Y' => $part->dimY,
