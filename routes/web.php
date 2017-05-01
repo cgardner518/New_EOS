@@ -56,3 +56,26 @@ Route::get('/peasant', function(){
   Auth::loginUsingId('48356e60-b576-11e6-8fb9-0aad45e20ffe');
   return redirect('/requests');
 });
+Route::get('/viewer', function(){
+  return view('stigup');
+});
+
+
+Route::get('/stigz', function(){
+  $ch = curl_init();
+
+  // set url
+  curl_setopt($ch, CURLOPT_URL, "https://www.stigviewer.com/stig/application_security_and_development_checklist/2014-12-22/MAC-3_Sensitive/json");
+
+  //return the transfer as a string
+  curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+
+  // $output contains the output string
+  $output = curl_exec($ch);
+  $output = json_decode($output, true);
+
+  // close curl resource to free up system resources
+  curl_close($ch);
+
+  return response()->json($output);
+});

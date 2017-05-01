@@ -166,37 +166,54 @@
 var inputz = '{!! Form::select('status', [0 => 'Pending', 1 => 'In Process', 3 => 'Rejected', 2 => 'Complete'], 1, ['class' => 'statusChange']) !!}'
 var chex = '{!! Form::checkbox('', '', false) !!}'
 
-  // $(document.body).on('keyup', '.form-control.content-search.filter', function(){
-  //   $('tr td:nth-child(14)').each(function(i,v){
-  //   //  var $curr = $(v).text().split('-');
-  //   console.log($(v).closest(''));
-  //     $(v).html($(inputz).attr('id', $curr[0] ).val($curr[1]))
-  //   })
-  //
-  //   $('tr td:nth-child(15)').each(function(i,v){
-  //     var $chektd =  $(v).text();
-  //     $(v).html($(chex).attr('name', $chektd))
-  //     $(v).parent().attr('align', 'center')
-  //   })
-  //
-  // })
+  $(document.body).on('keyup', '.form-control.content-search.filter', function(){
+    $('tr td:nth-child(2)').hide()
+    $('tr th:nth-child(2)').hide()
+
+    $('tr td:nth-child(5)').hide()
+    $('tr th:nth-child(5)').hide()
+
+    $('tr td:nth-child(16)').each(function(i,v){
+      if ($(v).text().indexOf('-') > 0) {
+        $curr = $(v).text().split('-');
+        // console.log($curr);
+        $(v).html($(inputz).attr('id', $curr[0] ).val($curr[1]))
+      }
+    })
+    $('tr td:nth-child(17)').each(function(i,v){
+      if ($(v).text().length > 0) {
+        console.log($(v).text());
+        var $chektd =  $(v).text();
+        $(v).html($(chex).attr('name', $chektd))
+        $(v).parent().attr('align', 'center')
+      }
+    })
+
+
+  })
 
  $('.show-selector').change(function(){
 
    if ($(this).val() == 'Parts') {
      $('.grid-holder').fadeIn(400)
      $('.eos, .indexTable').hide()
-     $('tr td:nth-child(14)').each(function(i,v){
-      //  $(v).
+     $('.tab-content.labcoat-grid').css('width', '100%');
+     $('tr td:nth-child(16)').each(function(i,v){
       var $curr = $(v).text().split('-');
        $(v).html($(inputz).attr('id', $curr[0] ).val($curr[1]))
-      // console.log($(v).html());
      })
-     $('tr td:nth-child(15)').each(function(i,v){
+     $('tr td:nth-child(17)').each(function(i,v){
        var $chektd =  $(v).text();
        $(v).html($(chex).attr('name', $chektd))
        $(v).parent().attr('align', 'center')
      })
+
+     $('tr td:nth-child(2)').hide()
+     $('tr th:nth-child(2)').hide()
+
+     $('tr td:nth-child(5)').hide()
+     $('tr th:nth-child(5)').hide()
+
    }else {
      $('.eos, .indexTable').fadeIn(400)
      $('.grid-holder').hide()
@@ -220,19 +237,31 @@ $('.batchChange').change(function(){
       $.ajax({
         url: 'http://chris.zurka.com/change/'+$id,
         method: 'POST',
-        data: $data
+        data: $data,
+        success: function(res){
+          $stats = ['Pending', 'In Process', 'Complete', 'Rejected'];
+          $(v).parent().parent().find('.statusChange').val(res[0])
+          $(v ).attr('checked', false)
+          $.gritter.add({
+            title: 'Part status updated',
+            text: res[1]+' changed to '+$stats[res[0]],
+            time: 3000
+          })
+          console.log(res);
+        }
       })
     })
-    window.location.assign('http://chris.zurka.com/requests')
+    // window.location.assign('http://chris.zurka.com/requests')
   }else {
     $.gritter.add({
       title: 'Oops!',
       text: 'No parts are selected',
       time: 3000
     })
-    $('.batchChange').val('')
+    // $('.batchChange').val('')
   }
-})
+  $(this).val('')
+  })
 
  $('body').on('change', '.statusChange', function(e){
    e.preventDefault();

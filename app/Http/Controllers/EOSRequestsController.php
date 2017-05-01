@@ -98,11 +98,13 @@ class EOSRequestsController extends Controller
             'href' => 'download/'.$part->id,
             'textContent' => $part->file_name
           ],
+          'part_a_sort' => $part->file_name,
           'quantity' => $part->quantity,
           'request_a' => [
             'href'=> "requests/{$eos->id}/edit",
             'textContent' => !!$eos->name ? "({$eos->id}) {$eos->name}" :"({$eos->id}) Unnamed"
           ],
+          'request_a_sort' => $eos->id,
           'status' => $stat[$part->status],
           'requester' => $uploader->name,
           'X' => $part->dimX,
@@ -208,6 +210,7 @@ class EOSRequestsController extends Controller
 
     public function change(Request $request)
     {
+      // dd($request->all());
       $stl = StlFile::find($request->stl);
       $stl->status = $request->status;
       $stl->save();
